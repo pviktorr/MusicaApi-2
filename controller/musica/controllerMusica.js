@@ -68,7 +68,7 @@ try {
                     if(resultMusica){
                         return message.SUCCESS_UPDATED_ITEM
                     }else{
-                        return message.ERROR_INTERNAR_SERVER_MODEL //500
+                        return message.ERROR_INTERNAL_SERVER_MODEL //500
                     }
                 }else{
                     return message.ERROR_NOT_FOUND
@@ -79,7 +79,7 @@ try {
         return message.ERROR_CONTENT_TYPE //415
     }
 } catch (error) {
-    return message.ERROR_INTERNAR_SERVER_CONTROLLER //500
+    return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
 }
 
 
@@ -169,7 +169,7 @@ const buscarMusica = async function(numero){
             let resultMusica = await musicaDAO.selectByIdMusica(id)  
 
 
-            if (resultMusica != false || typeof(resultMusica) == 'object'){
+            if (resultMusica != false || typeof (resultMusica) == 'object'){
               //Cria um JSON para colocar o rarry de musicas
               if(resultMusica.length > 0 ){
                   dadosMusica.status = true

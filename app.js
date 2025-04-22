@@ -115,8 +115,8 @@ app.post('/v1/controle-generos/genero', cors(), bodyParserJSON, async function (
 
     //Chama função da controller para inserir os dados e aguarda o retorno da função 
     let resultGenero = await controllerGenero.inserirGenero(dadosBody, contentType)
-    response.status(resultGenero.status_code)
-    response.json(resultGenero)
+    response.status(resultGenero.status_code);
+    response.json(resultGenero);
 
 })
 
@@ -130,7 +130,7 @@ app.get('/v1/controle-generos/generosID/:id', cors(), async function (request, r
 
 
     let id = request.params.id
-    let resultGenero = await controllerGenero.buscarGenero(id)
+    let resultGenero = await controllerGenero.buscarGenero(parseInt(id))
 
     response.status(resultGenero.status_code)
     response.json(resultGenero)

@@ -19,7 +19,8 @@ const inserirGenero = async function (genero, contentType) {
 
         if (String(contentType).toLowerCase() == 'application/json') {
 
-            if (genero.nome == '' || genero.nome == null || genero.nome == undefined || genero.nome > 100
+            if (genero.nome == '' || genero.nome == null || genero.nome == undefined || genero.nome.length > 100 ||
+                genero.tipo == '' || genero.tipo == null || genero.tipo == undefined || genero.tipo.length > 100
             ) {
                 return message.ERROR_REQUIRED_FIELDS//status code 400
             } else {
@@ -30,18 +31,20 @@ const inserirGenero = async function (genero, contentType) {
                 if (resultGenero) {
                     return message.SUCCESS_CREATED_ITEM // 201
                 } else
-                    return message.ERROR_INTERNAR_SERVER_MODEL//500
+                    return message.ERROR_INTERNAL_SERVER_MODEL//500
 
             }
         } else {
-            return message.ERROR_INTERNAR_SERVER_CONTROLLER //500
+            return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
         }
 
     } catch (error) {
-        return message.ERROR_INTERNAR_SERVER_CONTROLLER //500
+        console.log(error)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER  //500
     }
 
 }
+
 
 //Função para atualizar uma musica existente
 const atualizarGenero = async function (id, genero, contentType) {
@@ -101,16 +104,16 @@ const excluirGenero = async function () {
                     if (result)
                         return message.SUCCESS_DELETE_ITEM
                     else
-                        return message.ERROR_INTERNAR_SERVER_MODEL //500
+                        return message.ERROR_INTERNAL_SERVER_MODEL //500
                 } else {
                     return message.ERROR_NOT_FOUND //404
                 }
             } else {
-                return message.ERROR_INTERNAR_SERVER_MODEL //500
+                return message.ERROR_INTERNAL_SERVER_MODEL //500
             }
         }
     } catch (error) {
-        return message.ERROR_INTERNAR_SERVER_CONTROLLER //500
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 
 
@@ -146,49 +149,50 @@ const listarGenero = async function () {
         }
 
     } catch (error) {
-        
+        console.log(error)
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 
 }
 
 
+
 //Função para buscar uma musica pelo ID
-const buscarGenero = async function () {
+const buscarGenero = async function(numero){
+
     try {
 
         let id = numero
+        
 
 
-
-        if (id == "" || id == null || isNaN(id) || id == undefined) {
+        if(id == "" || id == null || isNaN(id)|| id == undefined)   {
             return message.ERROR_REQUIRED_FIELDS //400
-        } else {
+        }else{
             let dadosGenero = {}
-            let resultGenero = await generoDAO.selectByIdGenero(id)
+            let resultGenero = await generoDAO.selectByIdGenero(id)  
 
 
-            if (resultGenero != false || typeof (resultGenero) == 'object') {
-                //Cria um JSON para colocar o rarry de musicas
-                if (resultGenero.length > 0) {
-                    dadosGenero.status = true
-                    dadosGenero.status_code = 200,
-                        dadosGenero.musics = resultGenero
-
-                    return dadosGenero
-
-                } else {
-                    return message.ERROR_NOT_FOUND//404
-                }
-
-            } else {
-                return message.ERROR_INTERNAL_SERVER_CONTROLLER // 500
+            if (resultGenero != false || typeof (resultGenero) == 'object'){
+              //Cria um JSON para colocar o rarry de musicas
+              if(resultGenero.length > 0 ){
+                  dadosGenero.status = true
+                  dadosGenero.status_code = 200,
+                  dadosGenero.musics = resultGenero
+      
+                  return dadosGenero
+                  
+               }else{
+                  return message.ERROR_NOT_FOUND //404
+               }
+      
+            }else{
+              return message.ERROR_INTERNAL_SERVER_MODEL // 500
             }
         }
-    } catch (error) {
-        return false
-       
-    }
+        } catch (error) {
+        return false 
+                        }
 }
 
 module.exports = {
