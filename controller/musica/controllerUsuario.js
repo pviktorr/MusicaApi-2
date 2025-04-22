@@ -1,32 +1,31 @@
 
 /*
-Objetivo: Controller referente as ações de CRUD de Gravadora
-Data : 22/04/2025
-*/
+Objetivo: Controller referente as ações de CRUD de Música 
+Data : 11?02/2025
 
+*/
 //Import do arquivo de mensagens e status code
 const message = require('../../modulo/config.js')
 
 //Import para realizar o CRUD no banco de dados
-const gravadoraDAO = require('../../model/DAO/gravadora.js')
+const usuarioDAO = require('../../model/DAO/usuario.js')
 
 //Função para inserir uma nova musica
-const inserirGravadora = async function (gravadora, contentType) {
+const inserirUsuario = async function (usuario, contentType) {
     try {
 
         if (String(contentType).toLowerCase == 'application/json') {
 
-            if (gravadora.nome == '' || gravadora.nome == null || gravadora.nome == undefined || gravadora.nome.length > 100 ||
-                gravadora.email == '' || gravadora.email == null || gravadora.email == undefined || gravadora.email.length > 8
-
+            if (usuario.nome == '' || usuario.nome == null || usuario.nome == undefined || usuario.nome.length > 100 ||
+                usuario.email == '' || usuario.email == null || usuario.email == undefined || usuario.email.length > 8
 
             ) {
                 return message.ERROR_REQUIRED_FIELDS//status code 400
             } else {
                 //encaminhando os dados da musica para o DAO realizar o insert no Banco de dados
-                let resultGravadora = await gravadoraDAO.insertGravadora(gravadora)
+                let resultUsuario = await usuarioDAO.insertUsuario(usuario)
 
-                if (resultGravadora) {
+                if (resultUsuario) {
                     return message.SUCCESS_CREATED_ITEM // 201
                 } else
                     return message.ERROR_INTERNAL_SERVER_MODEL//500
@@ -42,28 +41,28 @@ const inserirGravadora = async function (gravadora, contentType) {
 
 }
 
-//Função para atualizar uma musica existente
-const atualizarGravadora = async function (id, gravadora, contentType) {
+//Função para atualizar um usuario existente
+const atualizarUsuario = async function (id, usuario, contentType) {
 
     try {
         if (String(contentType).toLowerCase() == 'application/json') {
 
-            if (gravadora.nome == '' || gravadora.nome == null || gravadora.nome == undefined || gravadora.nome.length > 100 ||
-                gravadora.duracao == '' || gravadora.duracao == null || gravadora.duracao == undefined || gravadora.duracao.length > 8 ||
-                id == '' || id == undefined || id == null || isNaN(id)
+            if (usuario.nome == '' || usuario.nome == null || usuario.nome == undefined || usuario.nome.length > 100 ||
+                usuario.email == ''|| usuario.email == null|| usuario.email == undefined|| usuario.email.length > 8  ||
+                id            == ''|| id == undefined      || id == null                || isNaN(id)
             ) {
                 return message.ERROR_REQUIRED_FIELDS//status code 400
             } else {
                 //verifica se o ID existe no BD
-                let result = await gravadoraDAO.selectByIdGravadora(id)
+                let result = await usuarioDAO.selectByIdUsuario(id)
 
                 if (result != false || typeof (result) == 'object') {
                     if (result.length > 0) {
                         //Update
                         //Adiciona o atributo do ID no JSON com os dados recebidos no corpo da requisição
-                        gravadora.id = id
-                        let resultGravadora = await gravadoraDAO.updateGravadora(gravadora)
-                        if (resultGravadora) {
+                        usuario.id = id
+                        let resultUsuario = await usuarioDAO.updateUsuario(usuario)
+                        if (resultUsuario) {
                             return message.SUCCESS_UPDATED_ITEM
                         } else {
                             return message.ERROR_INTERNAR_SERVER_MODEL //500
@@ -85,18 +84,18 @@ const atualizarGravadora = async function (id, gravadora, contentType) {
 }
 
 //Função para excluir uma musica existente
-const excluirGravadora = async function (id) {
+const excluirUsuario = async function (id) {
     try {
         if (id == "" || id == undefined || id == null || isNaN(id)) {
             return message.ERROR_REQUIRED_FIELDS //400
         } else {
             //Antes de excluir, estamos verificando se existe este id 
-            let resultGravadora = await gravadoraDAO.selectByIdGravadora(id)
+            let resultUsuario = await usuarioDAO.selectByIdUsuario(id)
 
-            if (resultGravadora != false || typeof (resultGravadora) == 'object') {
-                if (resultGravadora.length > 0) {
+            if (resultUsuario != false || typeof (resultUsuario) == 'object') {
+                if (resultUsuario.length > 0) {
                     //delete
-                    let result = await gravadoraDAO.deleteGravadora(id)
+                    let result = await usuarioDAO.deleteUsuario(id)
 
                     if (result)
                         return message.SUCCESS_DELETE_ITEM
@@ -119,24 +118,24 @@ const excluirGravadora = async function (id) {
 
 
 //Função para retornar uma lista de músicas
-const listarGravadora = async function () {
+const listarUsuario = async function () {
     try {
         //Obejto JSON 
-        let dadosGravadora = {}
+        let dadosUsuario = {}
 
         //Chama a função para retornar as musicas do banco de dados
-        let resultGravadora = await gravadoraDAO.selectAllGravadora()
+        let resultUsuario = await usuarioDAO.selectAllUsuario()
 
 
-        if (resultGravadora != false) {
+        if (resultUsuario != false) {
             //Cria um JSON para colocar o rarry de musicas
-            if (resultGravadora.length > 0) {
-                dadosGravadora.status = true
-                dadosGravadora.status_code = 200,
-                    dadosGravadora.items = resultGravadora.length
-                dadosGravadora.musics = resultGravadora
+            if (resultUsuario.length > 0) {
+                dadosUsuario.status = true
+                dadosUsuario.status_code = 200,
+                dadosUsuario.items = resultUsuario.length
+                dadosUsuario.users = resultUsuario
 
-                return dadosGravadora
+                return dadosUsuario
             } else {
                 return message.ERROR_NOT_FOUND //404
             }
@@ -152,7 +151,7 @@ const listarGravadora = async function () {
 }
 
 //Função para buscar uma musica pelo ID
-const buscarGravadora = async function (numero) {
+const buscarUsuario = async function (numero) {
 
     try {
 
@@ -163,18 +162,18 @@ const buscarGravadora = async function (numero) {
         if (id == "" || id == null || isNaN(id) || id == undefined) {
             return message.ERROR_REQUIRED_FIELDS //400
         } else {
-            let dadosGravadora = {}
-            let resultGravadora = await gravadoraDAO.selectByIdGravadora(id)
+            let dadosUsuario = {}
+            let resultUsuario = await usuarioDAO.selectByIdUsuario(id)
 
 
-            if (resultGravadora != false || typeof (resultGravadora) == 'object') {
+            if (resultUsuario != false || typeof (resultUsuario) == 'object') {
                 //Cria um JSON para colocar o rarry de musicas
-                if (resultGravadora.length > 0) {
-                    dadosGravadora.status = true
-                    dadosGravadora.status_code = 200,
-                        dadosGravadora.musics = resultGravadora
+                if (resultUsuario.length > 0) {
+                    dadosUsuario.status = true
+                    dadosUsuario.status_code = 200,
+                        dadosUsuario.users = resultUsuario
 
-                    return dadosGravadora
+                    return dadosUsuario
 
                 } else {
                     return message.ERROR_NOT_FOUND //404
@@ -190,9 +189,9 @@ const buscarGravadora = async function (numero) {
 }
 
 module.exports = {
-    inserirGravadora,
-    atualizarGravadora,
-    excluirGravadora,
-    listarGravadora,
-    buscarGravadora
+    inserirUsuario,
+    atualizarUsuario,
+    excluirUsuario,
+    listarUsuario,
+    buscarUsuario
 }

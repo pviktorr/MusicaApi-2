@@ -1,16 +1,16 @@
 /**************************************************************
  * Objetivo : Criar o CRUD de dados da tabela de musica no banco de dados 
  * Data : 11/02/2025
- * Autor : Marcel
+ * Autor : Pedro Victor
  * Versão : 1.0  
 ***************************************************************/
 //Import da biblioteca do prisma client para realizar as ações no Banco de Dados 
-const { prismaClient, PrismaClient } = require('@prisma/client')
-
+const {  PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 //Função para inserir um novo genero
 const insertGenero = async function (genero) {
     //Instancia da classe do prisma client(cria um objeto)
-    const prisma = new PrismaClient()
+    
     let sql = ` insert into tbl_genero (nome  
 )
                          values(
@@ -40,7 +40,7 @@ const updateGenero = async function () {
     }
 
 }
-const deleteGenero = async function () {
+const deleteGenero = async function (id) {
     try {
         let sql = `delete from tbl_genero where id = ${id}`
 
@@ -54,7 +54,7 @@ const deleteGenero = async function () {
         return false
     }
 }
-const selectAllMGenero = async function () {
+const selectAllGenero = async function () {
     try {
         let sql = 'select * from tbl_genero order by id desc'
         //Encaminha o script sql para o BD 
@@ -66,12 +66,15 @@ const selectAllMGenero = async function () {
             return false
 
     } catch (error) {
+        
         return false
     }
+    
 }
+
 const selectByIdGenero = async function () {
     try {
-        let sql = `select * from tbl_genero where id = ${ID}`
+        let sql = `select * from tbl_genero where id = ${id}`
         //Encaminha o script sql para o BD 
 
         let result = await prisma.$queryRawUnsafe(sql)
@@ -82,6 +85,7 @@ const selectByIdGenero = async function () {
             return false
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -91,7 +95,7 @@ module.exports = {
     insertGenero,
     updateGenero,
     deleteGenero,
-    selectAllMGenero,
+    selectAllGenero,
     selectByIdGenero
 
 

@@ -1,6 +1,6 @@
 /*
-Obejetivo: Controller referente as ações de CRUD de Música 
-Data : 11?02/2025
+Obejetivo: Controller referente as ações de CRUD de genero
+Data : 22/04/2025
 
 */
 //Import do arquivo de mensagens e status code
@@ -20,17 +20,17 @@ const inserirGenero = async function (genero, contentType) {
         if (String(contentType).toLowerCase() == 'application/json') {
 
             if (genero.nome == '' || genero.nome == null || genero.nome == undefined || genero.nome > 100
-            ){
+            ) {
                 return message.ERROR_REQUIRED_FIELDS//status code 400
             } else {
 
-                //encaminhando os dados da musica para o DAO realizar o insert no Banco de dados
+                //encaminhando os dados do genero para o DAO realizar o insert no Banco de dados
                 let resultGenero = await generoDAO.insertGenero(genero)
 
                 if (resultGenero) {
                     return message.SUCCESS_CREATED_ITEM // 201
                 } else
-                    return message.ERROR_INTERNAL_SERVER_MODEL//500
+                    return message.ERROR_INTERNAR_SERVER_MODEL//500
 
             }
         } else {
@@ -118,23 +118,23 @@ const excluirGenero = async function () {
 }
 
 
-//Função para retornar uma lista de músicas
+//Função para retornar uma lista de generos
 const listarGenero = async function () {
     try {
         //Obejto JSON 
         let dadosGenero = {}
 
         //Chama a função para retornar as musicas do banco de dados
-        let resultGenero = await generoDAO.selectAllgenero()
+        let resultGenero = await generoDAO.selectAllGenero()
 
 
-        if (resultMusica != false) {
-            //Cria um JSON para colocar o rarry de musicas
+        if (resultGenero != false) {
+            //Cria um JSON para colocar o array de musicas
             if (resultGenero.length > 0) {
                 dadosGenero.status = true
                 dadosGenero.status_code = 200,
-                    dadosGenero.items = dadosGenero.length
-                dadosGenero.genders = dadosGenero
+                    dadosGenero.items = resultGenero.length
+                dadosGenero.genders = resultGenero
 
                 return dadosGenero
             } else {
@@ -142,11 +142,12 @@ const listarGenero = async function () {
             }
 
         } else {
-            return message.ERROR_INTERNAR_SERVER_MODEL // 500
+            return message.ERROR_INTERNAL_SERVER_MODEL // 500
         }
 
     } catch (error) {
-        return message.ERROR_INTERNAR_SERVER_CONTROLLER //500
+        
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 
 }
@@ -177,15 +178,16 @@ const buscarGenero = async function () {
                     return dadosGenero
 
                 } else {
-                    return message.ERROR_NOT_FOUND //404
+                    return message.ERROR_NOT_FOUND//404
                 }
 
             } else {
-                return message.ERROR_INTERNAR_SERVER_MODEL // 500
+                return message.ERROR_INTERNAL_SERVER_CONTROLLER // 500
             }
         }
     } catch (error) {
         return false
+       
     }
 }
 
