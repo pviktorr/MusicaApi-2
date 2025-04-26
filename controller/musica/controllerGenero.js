@@ -19,8 +19,8 @@ const inserirGenero = async function (genero, contentType) {
 
         if (String(contentType).toLowerCase() == 'application/json') {
 
-            if (genero.nome == '' || genero.nome == null || genero.nome == undefined || genero.nome.length > 100 ||
-                genero.tipo == '' || genero.tipo == null || genero.tipo == undefined || genero.tipo.length > 100
+            if (genero.nome == '' || genero.nome == null || genero.nome == undefined || genero.nome.length > 100 
+              
             ) {
                 return message.ERROR_REQUIRED_FIELDS//status code 400
             } else {
@@ -36,6 +36,7 @@ const inserirGenero = async function (genero, contentType) {
             }
         } else {
             return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+           
         }
 
     } catch (error) {
@@ -68,7 +69,7 @@ const atualizarGenero = async function (id, genero, contentType) {
                         if (resultGenero) {
                             return message.SUCCESS_UPDATED_ITEM
                         } else {
-                            return message.ERROR_INTERNAR_SERVER_MODEL //500
+                            return message.ERROR_INTERNAL_SERVER_MODEL //500
                         }
                     } else {
                         return message.ERROR_NOT_FOUND
@@ -79,7 +80,7 @@ const atualizarGenero = async function (id, genero, contentType) {
             return message.ERROR_CONTENT_TYPE //415
         }
     } catch (error) {
-        return message.ERROR_INTERNAR_SERVER_CONTROLLER //500
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 
 
@@ -88,7 +89,7 @@ const atualizarGenero = async function (id, genero, contentType) {
 
 
 //Função para excluir uma musica existente
-const excluirGenero = async function () {
+const excluirGenero = async function (id) {
     try {
         if (id == "" || id == undefined || id == null || isNaN(id)) {
             return message.ERROR_REQUIRED_FIELDS //400
@@ -178,7 +179,7 @@ const buscarGenero = async function(numero){
               if(resultGenero.length > 0 ){
                   dadosGenero.status = true
                   dadosGenero.status_code = 200,
-                  dadosGenero.musics = resultGenero
+                  dadosGenero.genders = resultGenero
       
                   return dadosGenero
                   
@@ -191,7 +192,8 @@ const buscarGenero = async function(numero){
             }
         }
         } catch (error) {
-        return false 
+            console.log(error)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER
                         }
 }
 

@@ -54,14 +54,14 @@ app.post('/v1/controle-musicas/musica', cors(), bodyParserJSON, async function (
 
 })
 //Endpoint para listar as musicas
-app.get('/v1/controle-musicas/musica', cors(), bodyParserJSON, async function (request, response) {
+app.get('/v1/controle-musicas/musica', cors(), async function (request, response) {
     let resultMusica = await controllerMusica.listarMusica()
 
     response.status(resultMusica.status_code)
     response.json(resultMusica)
 })
 //Endpoint para buscar musicas
-app.get('/v1/controle-musicas/musicaID/:id', cors(), bodyParserJSON, async function (request, response) {
+app.get('/v1/controle-musicas/musicaID/:id', cors(), async function (request, response) {
 
 
     let id = request.params.id

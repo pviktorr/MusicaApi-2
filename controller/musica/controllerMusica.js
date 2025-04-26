@@ -14,7 +14,7 @@ const musicaDAO = require('../../model/DAO/musica.js')
 const inserirMusica = async function(musica, contentType){
     try {
       
-    if(String(contentType).toLowerCase == 'application/json'){
+    if(String(contentType).toLowerCase() == 'application/json'){
     
     if(musica.nome            == '' || musica.nome            == null || musica.nome            == undefined || musica.nome.length            > 100 ||
        musica.duracao         == '' || musica.duracao         == null || musica.duracao         == undefined || musica.duracao.length         > 8  ||
@@ -172,7 +172,7 @@ const buscarMusica = async function(numero){
             if (resultMusica != false || typeof (resultMusica) == 'object'){
               //Cria um JSON para colocar o rarry de musicas
               if(resultMusica.length > 0 ){
-                  dadosMusica.status = true
+                  dadosMusica.status = true,
                   dadosMusica.status_code = 200,
                   dadosMusica.musics = resultMusica
       
@@ -183,11 +183,12 @@ const buscarMusica = async function(numero){
                }
       
             }else{
-              return message.ERROR_INTERNAR_SERVER_MODEL // 500
+              return message.ERROR_INTERNAL_SERVER_MODEL // 500
             }
         }
         } catch (error) {
-        return false 
+
+         return message.ERROR_INTERNAL_SERVER_CONTROLLER
                         }
 }
 

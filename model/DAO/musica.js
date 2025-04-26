@@ -36,7 +36,7 @@ let result = await prisma.$executeRawUnsafe(sql)
         return false  //Bug do BD
     
     } catch (error) {
-        console.log(error)
+        
         return false //Bug de Programação 
     }
 

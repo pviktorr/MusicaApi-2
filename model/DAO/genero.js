@@ -12,11 +12,11 @@ const insertGenero = async function (genero) {
     //Instancia da classe do prisma client(cria um objeto)
 
     let sql = ` insert into tbl_genero (
-    nome , tipo
+    nome 
 )
                          values(
-                                '${genero.nome}',
-                                '${genero.tipo}'
+                                '${genero.nome}'
+                                
                                 
                           )`
     //Executa o script SQL no banco de dados e aguarda o resultado (true ou false)
@@ -83,7 +83,7 @@ const selectByIdGenero = async function (id) {
 
         if (result)
             return result//Retorna os dados do Banco
-        
+
         else
             return false
 

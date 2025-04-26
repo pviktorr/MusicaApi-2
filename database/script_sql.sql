@@ -17,7 +17,7 @@ link                     varchar(200)
 
 create table tbl_genero(
 id 			             int not null primary key auto_increment,
-nome 		             varchar(100) not null,
+nome 		             varchar(100) not null
 
 
 
