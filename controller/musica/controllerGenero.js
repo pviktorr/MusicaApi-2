@@ -19,8 +19,8 @@ const inserirGenero = async function (genero, contentType) {
 
         if (String(contentType).toLowerCase() == 'application/json') {
 
-            if (genero.nome == '' || genero.nome == null || genero.nome == undefined || genero.nome.length > 100 
-              
+            if (genero.nome == '' || genero.nome == null || genero.nome == undefined || genero.nome.length > 100
+
             ) {
                 return message.ERROR_REQUIRED_FIELDS//status code 400
             } else {
@@ -36,11 +36,11 @@ const inserirGenero = async function (genero, contentType) {
             }
         } else {
             return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
-           
+
         }
 
     } catch (error) {
-        console.log(error)
+
         return message.ERROR_INTERNAL_SERVER_CONTROLLER  //500
     }
 
@@ -48,45 +48,42 @@ const inserirGenero = async function (genero, contentType) {
 
 
 //Função para atualizar uma musica existente
-const atualizarGenero = async function (id, genero, contentType) {
-    try {
-        if (String(contentType).toLowerCase() == 'application/json') {
+const atualizarGenero = async function(id, genero, contentType){
+    
+try {
+    if(String(contentType).toLowerCase() == 'application/json'){
+    
+        if( genero.nome            == '' || genero.nome            == null || genero.nome            == undefined || genero.nome.length            > 100 ||
+           id             == ''         || id                ==  undefined|| id == null                          ||  isNaN(id)                       
+        ){
+            return message.ERROR_REQUIRED_FIELDS//status code 400
+        }else{
+            //verifica se o ID existe no BD
+            let result = await  generoDAO.selectByIdGenero(id)
 
-            if (genero.nome == null || genero.nome == undefined || genero.nome.length > 100 ||
-                id == '' || id == undefined || id == null || isNaN(id)
-            ) {
-                return message.ERROR_REQUIRED_FIELDS//status code 400
-            } else {
-                //verifica se o ID existe no BD
-                let result = await generoDAO.selectByIdMusica(id)
-
-                if (result != false || typeof (result) == 'object') {
-                    if (result.length > 0) {
-                        //Update
-                        //Adiciona o atributo do ID no JSON com os dados recebidos no corpo da requisição
-                        genero.id = id
-                        let resultGenero = await generoDAO.updateGenero(genero)
-                        if (resultGenero) {
-                            return message.SUCCESS_UPDATED_ITEM
-                        } else {
-                            return message.ERROR_INTERNAL_SERVER_MODEL //500
-                        }
-                    } else {
-                        return message.ERROR_NOT_FOUND
+            if(result != false || typeof(result)== 'object'){
+                if(result.length > 0 ){
+                    //Update
+                    //Adiciona o atributo do ID no JSON com os dados recebidos no corpo da requisição
+                    genero.id = id 
+                    let resultGenero = await generoDAO.updateGenero(genero)
+                    if(resultGenero){
+                        return message.SUCCESS_UPDATED_ITEM
+                    }else{
+                        return message.ERROR_INTERNAL_SERVER_MODEL //500
                     }
+                }else{
+                    return message.ERROR_NOT_FOUND
                 }
             }
-        } else {
-            return message.ERROR_CONTENT_TYPE //415
         }
-    } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }else{
+        return message.ERROR_CONTENT_TYPE //415
     }
-
-
-
+} catch (error) {
+    return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
 }
-
+}
 
 //Função para excluir uma musica existente
 const excluirGenero = async function (id) {
@@ -150,7 +147,7 @@ const listarGenero = async function () {
         }
 
     } catch (error) {
-        console.log(error)
+
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 
@@ -159,42 +156,42 @@ const listarGenero = async function () {
 
 
 //Função para buscar uma musica pelo ID
-const buscarGenero = async function(numero){
+const buscarGenero = async function (numero) {
 
     try {
 
         let id = numero
-        
 
 
-        if(id == "" || id == null || isNaN(id)|| id == undefined)   {
+
+        if (id == "" || id == null || isNaN(id) || id == undefined) {
             return message.ERROR_REQUIRED_FIELDS //400
-        }else{
+        } else {
             let dadosGenero = {}
-            let resultGenero = await generoDAO.selectByIdGenero(id)  
+            let resultGenero = await generoDAO.selectByIdGenero(id)
 
 
-            if (resultGenero != false || typeof (resultGenero) == 'object'){
-              //Cria um JSON para colocar o rarry de musicas
-              if(resultGenero.length > 0 ){
-                  dadosGenero.status = true
-                  dadosGenero.status_code = 200,
-                  dadosGenero.genders = resultGenero
-      
-                  return dadosGenero
-                  
-               }else{
-                  return message.ERROR_NOT_FOUND //404
-               }
-      
-            }else{
-              return message.ERROR_INTERNAL_SERVER_MODEL // 500
+            if (resultGenero != false || typeof (resultGenero) == 'object') {
+                //Cria um JSON para colocar o rarry de musicas
+                if (resultGenero.length > 0) {
+                    dadosGenero.status = true
+                    dadosGenero.status_code = 200,
+                        dadosGenero.genders = resultGenero
+
+                    return dadosGenero
+
+                } else {
+                    return message.ERROR_NOT_FOUND //404
+                }
+
+            } else {
+                return message.ERROR_INTERNAL_SERVER_MODEL // 500
             }
         }
-        } catch (error) {
-            console.log(error)
+    } catch (error) {
+        console.log(error)
         return message.ERROR_INTERNAL_SERVER_CONTROLLER
-                        }
+    }
 }
 
 module.exports = {

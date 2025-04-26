@@ -27,11 +27,13 @@ const insertGenero = async function (genero) {
     else
         return false
 }
-const updateGenero = async function () {
+const updateGenero = async function (genero) {
     try {
-        let sql = `update tbl_genero set nome = ${genero.nome} `
+        let sql = `UPDATE tbl_genero SET nome = '${genero.nome}' WHERE id = ${genero.id}`;
 
-        let result = await prisma.$executeRawUnsafe(sql)
+
+
+        let result = await prisma.$queryRawUnsafe(sql)
 
         if (result)
             return true
