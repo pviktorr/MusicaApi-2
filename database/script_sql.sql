@@ -38,6 +38,21 @@ email                   varchar(100) not null
 
 
 );
+create table tbl_artista(
+id 						int not null primary key auto_increment,
+nome                     varchar(100) not null, 
+id_nacionalidade         int not null,
+
+constraint FK_NACIONALIDADE_ARTISTA
+foreign key (id_nacionalidade)
+references (tbl_nacionalidade) 
+
+);
+create table tbl_nacionalidade(
+id      int not null primary key auto_increment,
+nome    varchar(100) not null
+);
+
 
 
 show tables ;
