@@ -25,6 +25,8 @@ const bodyParserJSON = bodyParser.json()
 
 //Cria um objeto para criar a API
 const app = express()
+const controllerNacionalidade= require('./controller/musica/controllerNacionalidade.js')
+const controllerArtista = require('./controller/musica/controllerArtista.js')
 const controllerUsuario = require('./controller/musica/controllerUsuario.js')
 const controllerGravadora = require('./controller/musica/controllerGravadora.js')
 const controllerGenero = require('./controller/musica/controllerGenero.js')
@@ -296,7 +298,46 @@ app.put('/v1/controle-usuarios/usuario/:id', cors(), bodyParserJSON, async funct
     response.status(resultUsuario.status_code)
     response.json(resultUsuario)
 })
+//Artistas
+app.post('/v1/controle-artistas/artista', cors(), bodyParserJSON, async function (request, response) {
+    //Recebe o content-type da requisição 
+    let contentType = request.headers['content-type']
+    //Recebe os dados da requisição 
+    let dadosBody = request.body
 
-app.listen(8080, function () {
+    //Chama função da controller para inserir os dados e aguarda o retorno da função 
+    let resultArtista = await controllerArtista.inserirArtista(dadosBody, contentType)
+    response.status(resultArtista.status_code);
+    response.json(resultArtista);
+
+})
+app.get('/v1/controle-artistas/artista', cors(), bodyParserJSON, async function (request, response) {
+    let resultArtista = await controllerArtista.listarArtista()
+
+    response.status(resultArtista.status_code)
+    response.json(resultArtista)
+})
+
+//Nacionalidade
+app.post('/v1/controle-nacionalidades/nacionalidade', cors(), bodyParserJSON, async function (request, response) {
+    //Recebe o content-type da requisição 
+    let contentType = request.headers['content-type']
+    //Recebe os dados da requisição 
+    let dadosBody = request.body
+
+    //Chama função da controller para inserir os dados e aguarda o retorno da função 
+    let resultNacionalidade = await controllerNacionalidade.inserirNacionalidade(dadosBody, contentType)
+    response.status(resultNacionalidade.status_code);
+    response.json(resultNacionalidade);
+
+})
+app.get('/v1/controle-nacionalidades/nacionalidade', cors(), bodyParserJSON, async function (request, response) {
+    let resultNacionalidade = await controllerNacionalidade.listarNacionalidade()
+
+    response.status(resultNacionalidade.status_code)
+    response.json(resultNacionalidade)
+})
+
+app.listen(3030, function () {
     console.log('API aguardando requisições...')
 })

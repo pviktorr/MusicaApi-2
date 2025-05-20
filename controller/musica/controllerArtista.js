@@ -10,7 +10,6 @@ const message = require('../../modulo/config.js')
 
 //Import do aquivo para realizar o CRUD de dados no Banco de Dados
 const artistaDAO = require('../../model/DAO/artistas.js')
-
 const controllerNacionalidade = require('./controllerNacionalidade.js')
 
 //Função para tratar a inserção de um novo filme no DAO
@@ -20,13 +19,13 @@ const inserirArtista = async function(artista, contentType){
         {
                 if (artista.nome              == ''           || artista.nome               == undefined    || artista.nome            == null || artista.nome.length > 80   ||
                     
-                    artista.id_nacionalidade  == ''           || artista.id_nacionalidade  == undefined
+                    artista.id_nacionalidade  == ''           || artista.id_nacionalidade  == undefined  || artista.id_nacionalidade == null
                 )
                 {
                     return message.ERROR_REQUIRED_FIELDS //400
                 }else{
                     //Chama a função para inserir no BD e aguarda o retorno da função
-                    let resultArtista = await artistaDAO.inserirArtista(artista)
+                    let resultArtista = await artistaDAO.insertArtista(artista)
 
                     if(resultArtista)
                         return message.SUCCESS_CREATED_ITEM //201
@@ -127,6 +126,7 @@ const listarArtista = async function(){
         let dadosArtista = {}
         //Chama a função para retornar os filmes cadastrados
         let resultArtista = await artistaDAO.selectAllArtista()
+        console.log(resultArtista)
 
         if(resultArtista != false || typeof(resultArtista) == 'object'){
             if(resultArtista.length > 0){
@@ -134,94 +134,85 @@ const listarArtista = async function(){
                
                 //Criando um JSON de retorno de dados para a API
                 dadosArtista.status = true
-                dadosFilme.status_code = 200
-                dadosFilme.items = resultArtista.length
+                dadosArtista.status_code = 200
+                dadosArtista.items = resultArtista.length
                 
                 //Percorrer o array de filmes para pegar cada ID de classificação
                 // e descobrir quais os dados da classificação
                 
-                // resultFilme.forEach( async function(itemFilme){
+                // resultArtista.forEach( async function(itemFilme){
                 //Precisamos utilizar o for of, pois o foreach não consegue trabalhar com 
                 // requisições async com await
-                for(const itemArtista of resultFilme){
+                for(const itemArtista of resultArtista){
                     /* Monta o objeto da classificação para retornar no Filme (1XN) */
                         //Busca os dados da classificação na controller de classificacao
                         let dadosNacionalidade = await controllerNacionalidade.buscarNacionalidade(itemArtista.id_nacionalidade)
                         //Adiciona um atributo classificação no JSON de filmes e coloca os dados da classificação
-                        itemFilme.classificacao = dadosClassificacao.classificacao
+                        itemArtista.nacionalidade = dadosNacionalidade.nacionalidade
                         //Remover um atributo do JSON
-                        delete itemFilme.id_classificacao
-                    /* */
-
-                    /* Monta o objeto de Generos para retornar no Filme (Relação NxN) */
-                        //encaminha o id do filme para a controller retornar os generos associados a esse filme
-                        let dadosGenero = await controllerFilmeGenero.buscarGeneroPorFilme(itemFilme.id)
-                        console.log(dadosGenero)
-                        //Adiciona um atributo genero no JSON de filmes e coloca os dados do genero
-                        itemFilme.genero = dadosGenero.genero
-
-                    /* */
-                    //Adiciona em um novo array o JSON de filmes com a sua nova estrutura de dados
-                    arrayFilmes.push(itemFilme)
- 
+                       
+                    /* */ 
+                    arrayArtista.push(itemArtista)
                 }
-                
-                dadosFilme.films = arrayFilmes
 
-                return dadosFilme
+                // console.log(arrayArtista)
+                dadosArtista.artists = arrayArtista
+
+                return dadosArtista
             }else{
                 return message.ERROR_NOT_FOUND //404
             }
         }else{
             return message.ERROR_INTERNAL_SERVER_MODEL //500
         }
-    } catch (error) {
+    } catch (error) {   
 
+        console.error(error)
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 }
 
 //Função para tratar o retorno de um filme filtrando pelo ID do DAO
-const buscarFilme = async function(id){
+const buscarArtista = async function(id){
     try {
 
-        let arrayFilmes = []
+        let arrayArtista = []
         
         if(id == '' || id == undefined || id == null || isNaN(id) || id <=0){
             return message.ERROR_REQUIRED_FIELDS //400
         }else{
-            dadosFilme = {}
+            dadosArtista = {}
 
-            let resultFilme = await filmeDAO.selectByIdFilme(parseInt(id))
+            let resultArtista = await artistaDAO.selectByIdArtista(parseInt(id))
             
-            if(resultFilme != false || typeof(resultFilme) == 'object'){
-                if(resultFilme.length > 0){
+            if(resultArtista != false || typeof(resultArtista) == 'object'){
+                if(resultArtista.length > 0){
                      //Criando um JSON de retorno de dados para a API
-                    dadosFilme.status = true
-                    dadosFilme.status_code = 200
+                     dadosArtista.status = true
+                     dadosArtista.status_code = 200
                     
                      //Precisamos utilizar o for of, pois o foreach não consegue trabalhar com 
                 // requisições async com await
-                for(const itemFilme of resultFilme){
+                for(const itemArtista of resultArtista){
                     //Busca os dados da classificação na controller de classificacao
-                    let dadosClassificacao = await controllerClassificacao.buscarClassificacao(itemFilme.id_classificacao)
+                    let dadosNacionalidade = await controllerNacionalidade.buscarNacionalidade(itemArtista.id_nacionalidade)
                     
                     //Adiciona um atributo classificação no JSON de filmes e coloca os dados da classificação
-                    itemFilme.classificacao = dadosClassificacao.classificacao
+                    itemArtista.nacionalidade = dadosNacionalidade.nacionalidade
                     
                     //Remover um atributo do JSON
-                    delete itemFilme.id_classificacao
+                    delete itemArtista.id_nacionalidade
                     
                     //Adiciona em um novo array o JSON de filmes com a sua nova estrutura de dados
                     arrayFilmes.push(itemFilme)
  
                 }
                 
-                dadosFilme.films = arrayFilmes
+                dadosArtista.artists = arrayArtista
 
                     // dadosFilme.films = resultFilme
 
-                    return dadosFilme //200
+                    return dadosArtista //200
                 }else{
                     return message.ERROR_NOT_FOUND //404
                 }
@@ -236,9 +227,9 @@ const buscarFilme = async function(id){
 }
 
 module.exports = {
-    inserirFilme,
-    atualizarFilme,
-    excluirFilme,
-    listarFilme,
-    buscarFilme
+    inserirArtista,
+    atualizarArtista,
+    excluirArtista,
+    listarArtista,
+    buscarArtista
 } 

@@ -14,11 +14,14 @@ const prisma = new PrismaClient()
 const insertArtista = async function (artista) {
     try {
 
-        let sql = `insert into tbl_filme  ( nome,
-                                            id_nacionalidade
+        let sql = `insert into tbl_artista  ( 
+        
+        nome,
+        id_nacionalidade
                                         ) 
                                           values 
                                         (
+                                   
                                           '${artista.nome}',
                                     
                                           '${artista.id_nacionalidade}'
